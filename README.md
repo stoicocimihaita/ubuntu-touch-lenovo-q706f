@@ -15,6 +15,8 @@ SM8250, 12.6" 2560×1600 OLED).
 > device. There is no official installer and no OTA yet. Read [docs/RECOVERY.md](docs/RECOVERY.md)
 > and take the EDL backup *before* you change anything. You do this at your own risk.
 
+Discussion, questions and test reports: [XDA thread](https://xdaforums.com/t/rom-unofficial-wip-ubuntu-touch-24-04-halium-11-for-lenovo-tab-p12-pro-xiaoxin-pad-pro-12-6-tb-q706f.4808465/).
+
 ## What works
 
 Tested on 2026-11-12. "Confirmed" means a person checked it on the device.
