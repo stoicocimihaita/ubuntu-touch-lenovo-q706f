@@ -1,0 +1,47 @@
+#!/bin/sh
+# q706f: slot-aware wrapper around the Halium parse-android-dynparts tool.
+#
+# The stock tool always reads logical-partition metadata slot 0. This tablet is
+# Virtual A/B: only the partitions of the *active* slot exist in super, and
+# their layout lives in the metadata slot of that A/B slot (slot 1 for "_b").
+# We present the tool with a device-mapper view of super in which the active
+# metadata slot sits where slot 0 is expected, then point the resulting tables
+# back at the real super partition. Any failure falls back to stock behaviour.
+
+REAL=/sbin/parse-android-dynparts.real
+SUPER="$1"
+VIEW=q706f_super_view
+
+fallback() { exec "$REAL" "$SUPER"; }
+
+suffix=$(grep -o 'androidboot\.slot_suffix=..' /proc/cmdline | tail -1 | cut -d= -f2)
+case "$suffix" in
+    _b) slot=1 ;;
+    *) fallback ;;
+esac
+
+dev=$(readlink -f "$SUPER")
+total=$(cat "/sys/class/block/$(basename "$dev")/size" 2>/dev/null)
+# LpMetadataGeometry sits at byte 4096; metadata_max_size is the u32 at +40.
+meta_bytes=$(od -An -tu4 -j4136 -N4 "$SUPER" 2>/dev/null | tr -d ' ')
+[ -n "$total" ] && [ -n "$meta_bytes" ] && [ "$meta_bytes" -gt 0 ] || fallback
+
+first=24                      # primary metadata starts at byte 0x3000
+len=$((meta_bytes / 512))
+src=$((first + slot * len))
+rest=$((first + len))
+
+dmsetup remove "$VIEW" >/dev/null 2>&1
+dmsetup create "$VIEW" --readonly >/dev/null 2>&1 <<TABLE || fallback
+0 $first linear $dev 0
+$first $len linear $dev $src
+$rest $((total - rest)) linear $dev $rest
+TABLE
+dmsetup mknodes "$VIEW" >/dev/null 2>&1
+
+out=$("$REAL" "/dev/mapper/$VIEW" 2>/dev/null)
+dmsetup remove "$VIEW" >/dev/null 2>&1
+case "$out" in
+    *"dmsetup create"*) printf '%s\n' "$out" | sed "s#/dev/mapper/$VIEW#$SUPER#g" ;;
+    *) fallback ;;
+esac

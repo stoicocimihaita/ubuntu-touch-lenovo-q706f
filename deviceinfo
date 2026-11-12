@@ -1,0 +1,47 @@
+deviceinfo_name="Lenovo Tab P12 Pro"
+deviceinfo_manufacturer="Lenovo"
+deviceinfo_codename="q706f"
+deviceinfo_arch="aarch64"
+deviceinfo_halium_version="11"
+deviceinfo_ubuntu_touch_release="24.04-2.x"
+
+# Bring-up layout: the rootfs lives in ubuntu.img on userdata (Android's super partition is left
+# untouched), so no systempart= is passed. Add systempart=/dev/mapper/system when moving to the
+# partition layout needed for OTA.
+
+# net.ifnames=0: the Wi-Fi interface was named wlan0 on some boots and wlp1s0 on others, and saved
+# Wi-Fi profiles are matched by interface name, so the password was asked again after a reboot.
+
+# Kernel: Lenovo downstream 4.19.157 (silime tree) + q706f stock config + Halium fragment.
+# The fork carries the q706f patches on top of the Lenovo open-source drop (branch halium-11.0).
+deviceinfo_kernel_source="https://github.com/stoicocimihaita/android_kernel_lenovo_sm8250"
+deviceinfo_kernel_source_branch="halium-11.0"
+deviceinfo_kernel_defconfig="vendor/q706f_stock_defconfig q706f_halium.config"
+deviceinfo_kernel_image_name="Image"
+deviceinfo_kernel_cmdline="console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0xa90000 androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=a600000.dwc3 swiotlb=2048 loop.max_part=7 cgroup.memory=nokmem,nosocket reboot=panic_warm buildvariant=user console=tty0 net.ifnames=0"
+deviceinfo_kernel_clang_compile="true"
+deviceinfo_kernel_use_dtc_ext="true"
+
+# Boot image layout, taken from the stock S530352 boot.img (header v2).
+deviceinfo_flash_pagesize="4096"
+deviceinfo_flash_offset_base="0x00000000"
+deviceinfo_flash_offset_kernel="0x00008000"
+deviceinfo_flash_offset_ramdisk="0x01000000"
+deviceinfo_flash_offset_second="0x00f00000"
+deviceinfo_flash_offset_tags="0x00000100"
+deviceinfo_flash_offset_dtb="0x01f00000"
+deviceinfo_bootimg_qcdt="false"
+deviceinfo_bootimg_header_version="2"
+deviceinfo_bootimg_os_version="11"
+deviceinfo_bootimg_os_patch_level="2024-05-05"
+deviceinfo_bootimg_partition_size="100663296"
+
+# The kernel tree ships no device tree: the stock DTB is extracted from your own firmware by
+# scripts/extract-stock.sh (it is not redistributed here); the dtbo partition is left untouched.
+deviceinfo_bootimg_prebuilt_dtb="q706f-stock.dtb"
+deviceinfo_skip_dtbo_partition="true"
+
+# Recovery image is added in Phase 7.
+# deviceinfo_has_recovery_partition="true"
+# deviceinfo_recovery_partition_size="104857600"
+deviceinfo_rootfs_image_sector_size="4096"

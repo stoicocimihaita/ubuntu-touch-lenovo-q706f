@@ -1,0 +1,8 @@
+# q706f: Android properties added on top of the vendor defaults.
+
+# The camera HAL reports sensor orientation relative to Android's portrait frame,
+# while the display is driven as a landscape panel. Tell the Ubuntu Touch camera
+# plugin (qtubuntu-camera) the orientation relative to the display instead.
+aal.camera.orientations.0=0
+aal.camera.orientations.1=0
+aal.camera.orientations.2=0

@@ -1,0 +1,14 @@
+q706f:
+  Vendor: Lenovo
+  PrettyName: Lenovo Tab P12 Pro
+  DeviceType: tablet
+  GridUnit: 18
+  SupportedOrientations:
+    - Portrait
+    - InvertedPortrait
+    - Landscape
+    - InvertedLandscape
+  PrimaryOrientation:
+    - Landscape
+  BacklightSysfsPath:
+    - /sys/class/backlight/panel0-backlight

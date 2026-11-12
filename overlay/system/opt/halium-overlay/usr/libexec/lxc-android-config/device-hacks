@@ -1,0 +1,29 @@
+#!/bin/sh
+# q706f device bring-up hooks, run once the Android container is up.
+
+# Wait for the Android property system and the Wi-Fi HAL.
+# The Goodix controller only scans for the active pen after "support_pen" is set;
+# stock Android's framework does this, here it is done once at boot.
+[ -w /sys/devices/platform/goodix_ts.0/support_pen ] && echo 1 > /sys/devices/platform/goodix_ts.0/support_pen
+
+# Every wait is bounded so a missing HAL can never block the boot.
+i=0
+while [ ! -e /dev/socket/property_service ] && [ $i -lt 150 ]; do sleep 0.2; i=$((i + 1)); done
+i=0
+while [ "$(getprop init.svc.vendor.wifi_hal_legacy)" != "running" ] && [ $i -lt 60 ]; do sleep 0.5; i=$((i + 1)); done
+
+# The qcacld (qca6390) driver only brings wlan0 up after ON is written.
+i=0
+while [ ! -e /dev/wlan ] && [ $i -lt 60 ]; do sleep 0.5; i=$((i + 1)); done
+[ -e /dev/wlan ] && echo ON > /dev/wlan
+
+# Without WoWLAN the driver drops the connection on every suspend attempt. "any" woke the
+# tablet on background traffic; disconnect/magic-packet keeps the link and sleeps longer.
+i=0
+while [ ! -e /sys/class/ieee80211/phy0 ] && [ $i -lt 30 ]; do sleep 1; i=$((i + 1)); done
+iw phy phy0 wowlan enable disconnect magic-packet >/dev/null 2>&1 || true
+
+# Prefer deep sleep when suspending.
+[ -w /sys/power/mem_sleep ] && echo deep > /sys/power/mem_sleep
+
+exit 0

@@ -1,0 +1,10 @@
+# q706f: the Goodix touchscreen and pen report in the Android portrait frame (1600x2560) while the
+# panel is driven as 2560x1600 (stock Android compensates with primary_display_orientation=270).
+# Rotate the input coordinates to match the display.
+ATTRS{name}=="goodix_ts", ENV{LIBINPUT_CALIBRATION_MATRIX}="0 1 0 -1 0 1"
+ATTRS{name}=="goodix_ts,pen", ENV{LIBINPUT_CALIBRATION_MATRIX}="0 1 0 -1 0 1"
+
+# The pen node reports no axis resolution, so libinput refuses it as a tablet tool
+# ("missing tablet capabilities: resolution"). The active area is 170 x 271 mm for
+# 1600 x 2560 units, i.e. about 9 units/mm on both axes.
+KERNEL=="event*", ATTRS{name}=="goodix_ts,pen", ENV{EVDEV_ABS_00}="::9", ENV{EVDEV_ABS_01}="::9", RUN{builtin}+="keyboard"

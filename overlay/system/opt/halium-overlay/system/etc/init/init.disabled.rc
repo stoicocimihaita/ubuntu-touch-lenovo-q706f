@@ -1,0 +1,18 @@
+# Android services that must not run under Ubuntu Touch.
+
+# Memory pressure is handled on the Ubuntu side.
+service lmkd lmkd_HYBRIS_DISABLED
+    disabled
+    oneshot
+    override
+
+# Conflicts with the root filesystem console.
+service console /system/bin/sh_HYBRIS_DISABLED
+    disabled
+    override
+
+# USB role and gadget state are owned by usb-moded.
+service vendor.usb-hal-1-2 /vendor/bin/hw/android.hardware.usb@1.2-service-qti_HYBRIS_DISABLED
+    disabled
+    oneshot
+    override

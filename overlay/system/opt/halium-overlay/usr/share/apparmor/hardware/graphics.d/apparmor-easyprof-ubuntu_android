@@ -1,0 +1,10 @@
+# q706f (SM8250, Adreno 650): hardware access needed by confined apps for GL.
+# The Adreno driver reads GPU and CPU topology information at start-up.
+/dev/kgsl-3d0 rw,
+/sys/devices/platform/soc/3d00000.qcom,kgsl-3d0/kgsl/kgsl-3d0/** r,
+/sys/devices/system/cpu/present r,
+/sys/devices/system/cpu/possible r,
+/sys/devices/system/cpu/cpu[0-9]*/cpu_capacity r,
+/sys/devices/system/cpu/cpufreq/policy[0-9]*/cpuinfo_max_freq r,
+# Scaling settings read by the Qt platform plugin.
+/etc/ubuntu-touch-session.d/android.conf r,

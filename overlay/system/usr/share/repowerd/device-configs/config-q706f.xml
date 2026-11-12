@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- repowerd device configuration for the Lenovo Tab P12 Pro (q706f).
+     Ambient light comes from the ltr308 sensor through the Android sensors HAL.
+     The values are the stock ones from firmware S530352: product overlay
+     FrameworksResCommon_Sys.apk (auto-brightness arrays, doze) on top of
+     framework-res.apk (min/max/default/dim). Backlight scale is 0-255. -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <bool name="config_automatic_brightness_available">true</bool>
+
+    <!-- 7 lux thresholds define 8 zones. -->
+    <integer-array name="config_autoBrightnessLevels">
+        <item>10</item>
+        <item>60</item>
+        <item>210</item>
+        <item>350</item>
+        <item>420</item>
+        <item>1000</item>
+        <item>5000</item>
+    </integer-array>
+
+    <!-- One backlight value per zone. -->
+    <integer-array name="config_autoBrightnessLcdBacklightValues">
+        <item>77</item>
+        <item>77</item>
+        <item>120</item>
+        <item>144</item>
+        <item>198</item>
+        <item>230</item>
+        <item>247</item>
+        <item>255</item>
+    </integer-array>
+
+    <integer name="config_screenBrightnessSettingMinimum">32</integer>
+    <integer name="config_screenBrightnessSettingMaximum">255</integer>
+    <integer name="config_screenBrightnessSettingDefault">160</integer>
+    <integer name="config_screenBrightnessDim">10</integer>
+    <integer name="config_screenBrightnessDoze">17</integer>
+
+    <!-- A tablet has no reason to blank on proximity. -->
+    <bool name="config_suspendWhenScreenOffDueToProximity">false</bool>
+</resources>
