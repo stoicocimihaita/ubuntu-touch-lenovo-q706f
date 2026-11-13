@@ -40,7 +40,7 @@ Tested on 2026-11-12. "Confirmed" means a person checked it on the device.
 | Battery / charging | 🟡 | Level and slow charging reported; 45 W fast charging not tested |
 | Suspend | 🟡 | Enters deep sleep with the screen off and no USB host attached, but wakes often (Wi-Fi); overnight drain not measured |
 | Pen (Precision Pen 3) | 🟡 | Works as a precise touch contact; barrel button configurable. **No pressure sensitivity** (see below) |
-| Pen wireless charging | ❔ | NFC link to the pen works; charging did not start with the pen at 94 % |
+| Pen wireless charging | 🟡 | The earlier failure was a fault in the pen, not in the port (see porting notes). Not re-tested under Ubuntu Touch after the pen was fixed |
 | Pogo keyboard / touchpad | ❔ | Not tested |
 | microSD | ❔ | Reader detected, no card tested |
 | GPS | ➖ | No GNSS on the Wi-Fi model |

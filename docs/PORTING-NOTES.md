@@ -105,9 +105,19 @@ Options Ubuntu Touch needs that change CRCs, found by bisecting 27 builds:
 
 - Pen pressure: Mir 1.8.3 `src/platforms/evdev/libinput_device.cpp` has no tablet-tool
   handling and falls back to a constant touch pressure. Mir 2.20/2.28 upstream have none either.
-- Pen wireless charging: the CTN730 reads the pen's Bluetooth MAC over NFC, but its
-  activation self-test answers "no WLC capability" with the pen at 94 %. Whether charging
-  starts with a lower pen battery is not yet known.
+- Pen wireless charging: solved, and it was not a port problem. The CTN730 read the pen's
+  Bluetooth MAC over NFC, but its activation self-test answered "no WLC capability" at any
+  battery level. Reading the pen's NFC tag (NTAG I2C Plus) with a phone showed the cause:
+  the NDEF TLV length byte in page 4 was `00` instead of `0F` (`03 00 D1 06` instead of
+  `03 0F D1 06`), so the intact `WLCCAP` record behind it was not announced; most likely
+  a charging session was cut off during bring-up. The pen rewrites its tag when its MCU
+  starts: rebooting the pen through its Nordic buttonless DFU service (characteristic
+  `8ec90003-f315-4f60-9fb8-838830daea50`: enable indications, write `01`, the pen answers
+  `20 01 01`, sits in the bootloader for 120 s and returns) fixed it. After that the same
+  chip detected the pen and charged it at once (`92 ..` detection, `94` charging state,
+  `95` battery level). This was verified on the same tablet with a mainline port of
+  Lenovo's `ctn730` driver; it has not been re-tested under Ubuntu Touch, which runs
+  Lenovo's original driver with the same protocol.
 - Suspend: frequent wake-ups from the Wi-Fi driver's packet filters; `hid-over-i2c` (pogo
   touchpad) logs a resume error on every cycle while no keyboard is attached.
 - USB host mode enumerates at high speed (480 Mbit/s) only.
